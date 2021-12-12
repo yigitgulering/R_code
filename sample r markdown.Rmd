@@ -1,0 +1,154 @@
+---
+title: "Term Project of Yiğit Güler"
+author: "Yiğit Güler"
+date: "08 06 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(car)
+library(rmarkdown)
+library(haven)
+library(effects)
+library(dplyr)
+ceosal <- read_dta("ceosal.DTA")
+
+summary(ceosal)
+```
+
+1. We have lower p-value than our threshold so we accept the the null hypothesis
+in our model **ros** is not significant and can be accepted as zero. 
+```{r}
+reg.ceo <- lm(lsalary ~ lsales + roe + ros, data = ceosal)
+reg.ceo
+summary(reg.ceo)
+```
+
+2. We have 4 variables showing the industry of the companies which are showed with 0 and 1.
+
+```{r}
+summary(ceosal)
+
+```
+
+```{r}
+pairs(ceosal)
+```
+
+```{r}
+glimpse(ceosal)
+```
+
+3. If we look at the F-stat we can say that our model is significant with 205
+degrees of freedom. The Coefficients are significant except **ros**. Adjusted 
+R-squared is 0.2722. That means we can explain %27,22 of the model. 
+```{r}
+summary(reg.ceo)
+salvars <- coef(reg.ceo)
+salvars
+```
+
+```{r}
+cor.data <- cor(ceosal[,c(4,6,11,12)])
+print(cor.data)
+```
+
+4. We can observe that **ros** and **lsalary**, does not neccesarly have a 
+correlation.
+
+```{r}
+scatterplotMatrix(~ lsalary + lsales + roe + ros, data = ceosal)
+```
+
+5. Below we can see how the variables placed in our model we can see that 
+**ros** is behaving differently than the others. Our estimation with the 
+variables are not so different than the actual data. The outlier effects is not
+too heavy to bear.
+
+```{r}
+residualPlots(reg.ceo)
+```
+
+```{r}
+marginalModelPlots(reg.ceo)
+``` 
+
+```{r}
+mcPlots(reg.ceo,~lsales + roe + ros, overlaid=FALSE)
+``` 
+
+We see how well we can estimate the model with taken predictors.
+
+```{r}
+plot(predictorEffects(reg.ceo))
+``` 
+
+6.
+
+```{r}
+summary(reg.ceo)
+``` 
+
+
+```{r}
+plot(predictorEffects(reg.ceo))
+``` 
+
+# Equation of the model 
+
+With using 3 predictors we come up with the model below. Using **reg.ceo**. The interpretaions and way of estimations are above.
+
+<div align="center">$$E(log(salary))=\beta_{0} + \ (lsales)x_{1} + \ (roe)x_{2} + \ (ros)x_{3}$$</div>
+
+
+<div align="center">$$E(log(salary))=4.3117125 + \ (lsales)0.2803149 + \ (roe)0.0174168 + \ (ros)0$$</div>
+
+7. Since ros is insignificant in our model it does not change the salary and we
+take it as zero. But 50 units in increase would result to 0.0002417*50 = 0.012085
+Of course in the model we have log-level so 100*0.0002417x50 = 1.2085 per cent change
+It is not that big of a change considering it is also **insignificant**.
+
+8. We can see that we conclude with cor = -0.0336819 at the given confidence 
+intervals. In the light of the previous findings we can accept the Ho in this 
+case. **ros** is not significant in our model. Ergo we cannot use it nor can say
+it has a positive effect on **salary**.
+
+```{r}
+aa <- ceosal[,c(1,6)]
+
+cor.test(aa$salary,aa$ros, conf.level = 0.90)
+cor.test(aa$salary,aa$ros, conf.level = 0.95)
+cor.test(aa$salary,aa$ros, conf.level = 0.99)
+``` 
+
+9. No I would not because of the fact that given findings. There is  no situation
+we can accept **ros** to explain compensation for the CEOs. Since we cannot 
+accept it any model as a variable. The significancy of **ros** is making it 
+impossible to include into our models. Ros predictor is not a good predictor.
+
+```{r}
+reg.ceo <- lm(lsalary ~ lsales + roe + ros, data = ceosal)
+
+summary(reg.ceo)
+``` 
+
+```{r}
+pairs(ceosal)
+```
+
+# ros image
+
+![image](/Users/yigit/OneDrive/Masaüstü/image/ros.png)
+
+
+
+
+
+
+
+
